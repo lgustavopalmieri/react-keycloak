@@ -8,7 +8,7 @@ import {
 } from "../authFlow/authorizationFlow"
 import { useCallbackAndGetTokensMutation } from "./api/apiSlice"
 import { useAppDispatch } from "../app/hooks"
-import { setTokens } from "./api/authSlice"
+import { setIsAuthenticated, setTokens } from "./api/authSlice"
 
 const Callback = () => {
   const dispatch = useAppDispatch()
@@ -40,23 +40,42 @@ const Callback = () => {
               idToken: response.id_token,
             }),
           )
+          checkIfReceivedTokensMatchesWithCookiesTokens({
+            accessToken: response.access_token,
+            accessExpire: response.expires_in,
+            refreshToken: response.refresh_token,
+            refreshExpire: response.refresh_expires_in,
+            idToken: response.id_token,
+          })
+          dispatch(setIsAuthenticated(true))
+          navigate("/")
+        } else {
+          dispatch(
+            setTokens({
+              accessToken: "",
+              refreshToken: "",
+              idToken: "",
+            }),
+          )
+          dispatch(setIsAuthenticated(false))
+          navigate("/login")
         }
-
-        checkIfReceivedTokensMatchesWithCookiesTokens({
-          accessToken: response.access_token,
-          refreshToken: response.refresh_token,
-          idToken: response.id_token,
-        })
-
-        navigate("/")
       } catch (error) {
         console.error("Failed to fetch tokens:", error)
+        dispatch(
+          setTokens({
+            accessToken: "",
+            refreshToken: "",
+            idToken: "",
+          }),
+        )
+        dispatch(setIsAuthenticated(false))
         navigate("/login")
       }
     }
 
     fetchTokens()
-  }, [])
+  }, [dispatch])
 
   if (isLoading) {
     return <div>Loading...</div>

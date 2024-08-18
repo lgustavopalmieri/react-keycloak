@@ -1,7 +1,7 @@
-import { baseKeycloakUrl } from "../features/api/apiSlice"
 import { generateRandomBase64 } from "./codes"
 import Cookies from "js-cookie"
 import { decodeJwt } from "jose"
+import { baseKeycloakUrl } from "../features/api/apiSlice"
 
 // step one
 export const redirectToKeycloakLogin = () => {
@@ -56,30 +56,18 @@ export const callbackBodyParamsToGettingTokens = () => {
 
 interface ICheckTokens {
   accessToken: string
+  accessExpire: number
   refreshToken: string
+  refreshExpire: number
   idToken: string
-}
-
-export const setTokensOnCookies = ({
-  accessToken,
-  refreshToken,
-  idToken,
-}: ICheckTokens) => {
-  Cookies.set("accessToken", accessToken)
-  Cookies.set("refreshToken", refreshToken)
-  Cookies.set("idToken", idToken)
-
-  return {
-    accessToken,
-    refreshToken,
-    idToken,
-  }
 }
 
 // step six
 export const checkIfReceivedTokensMatchesWithCookiesTokens = ({
   accessToken,
+  accessExpire,
   refreshToken,
+  refreshExpire,
   idToken,
 }: ICheckTokens) => {
   const payloadAccessToken = decodeJwt(accessToken)
@@ -95,23 +83,38 @@ export const checkIfReceivedTokensMatchesWithCookiesTokens = ({
   ) {
     throw new Error("unauthenticated")
   }
-  return setTokensOnCookies({
+
+  Cookies.set("accessToken", accessToken, {
+    expires: Number(accessExpire) / 86400,
+  })
+  Cookies.set("refreshToken", refreshToken, {
+    expires: Number(refreshExpire) / 86400,
+  })
+  Cookies.set("idToken", idToken)
+
+  // Cookies.set("accessToken", accessToken)
+  // Cookies.set("refreshToken", refreshToken)
+  // Cookies.set("idToken", idToken)
+
+  return {
     accessToken,
     refreshToken,
     idToken,
-  })
+  }
 }
 
 // logout
 export const makeLogout = () => {
   const urlLogoutParams = new URLSearchParams({
     id_token_hint: Cookies.get("idToken") || "",
-    post_logout_redirect_uri: "http://localhost:5173",
+    post_logout_redirect_uri: "http://localhost:5173/",
   }).toString()
 
   Cookies.remove("accessToken")
   Cookies.remove("refreshToken")
   Cookies.remove("idToken")
+  Cookies.remove("nonce")
+  Cookies.remove("state")
 
   const keycloakLogoutUrl = `${baseKeycloakUrl}/logout?${urlLogoutParams}`
 

@@ -10,13 +10,17 @@ const authSlice = createSlice({
       accessToken: "",
       idToken: "",
     },
+    isAuthenticated: false,
   },
   reducers: {
     setTokens: (state, action) => {
       state.token = action.payload
     },
+    setIsAuthenticated: (state, action) => {
+      state.isAuthenticated = action.payload
+    },
   },
 })
 
-export const { setTokens } = authSlice.actions
+export const { setTokens, setIsAuthenticated } = authSlice.actions
 export default authSlice.reducer

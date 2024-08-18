@@ -1,7 +1,6 @@
 // src/app/apiSlice.js
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react"
 import { RootState } from "../../app/store"
-import Cookies from "js-cookie"
 import { callbackBodyParamsToGettingTokens } from "../../authFlow/authorizationFlow"
 
 export const baseKeycloakUrl =
@@ -20,25 +19,9 @@ export const apiSlice = createApi({
     },
   }),
   endpoints: builder => ({
-    // firstToken: builder.mutation({
-    //   query: ({ username, password, client_id }) => ({
-    //     url: "/token",
-    //     method: "POST",
-    //     body: new URLSearchParams({
-    //       username,
-    //       password,
-    //       client_id,
-    //       grant_type: "password",
-    //       scope: "openid",
-    //     }),
-    //     headers: {
-    //       "Content-Type": "application/x-www-form-urlencoded",
-    //     },
-    //   }),
-    // }),
     // step four
     callbackAndGetTokens: builder.mutation({
-      query: (arg) => {
+      query: arg => {
         return {
           url: `/token`,
           method: "POST",
@@ -49,9 +32,7 @@ export const apiSlice = createApi({
         }
       },
     }),
-
   }),
 })
 
-export const { useCallbackAndGetTokensMutation } =
-  apiSlice
+export const { useCallbackAndGetTokensMutation } = apiSlice

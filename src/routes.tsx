@@ -8,8 +8,7 @@ import {
 import Login from "./features/Login/Login"
 import Callback from "./features/Callback"
 import Logout from "./features/Logout/Logout"
-
-type Props = {}
+import ProtectedRoute from "./features/ProtectedRoute/ProtectedRoute"
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -18,6 +17,11 @@ const router = createBrowserRouter(
       <Route path="/login" element={<Login />} />
       <Route path="/callback" element={<Callback />} />
       <Route path="/logout" element={<Logout />} />
+      <Route element={<ProtectedRoute />}>
+        <Route path="/machines" element={<div>machines</div>} />
+        <Route path="/machines" element={<div>machines</div>} />
+        <Route path="/dashboard" element={<div>dashboard</div>} />
+      </Route>
     </Route>,
   ),
 )
