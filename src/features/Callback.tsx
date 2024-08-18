@@ -16,7 +16,6 @@ const Callback = () => {
     useCallbackAndGetTokensMutation()
 
   const navigate = useNavigate()
-  const location = useLocation()
 
   useEffect(() => {
     // Step two: Check state from cookies and URL
@@ -48,6 +47,7 @@ const Callback = () => {
             idToken: response.id_token,
           })
           dispatch(setIsAuthenticated(true))
+
           navigate("/")
         } else {
           dispatch(
@@ -70,6 +70,7 @@ const Callback = () => {
           }),
         )
         dispatch(setIsAuthenticated(false))
+        console.log("entra erro")
         navigate("/login")
       }
     }

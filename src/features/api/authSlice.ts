@@ -17,6 +17,7 @@ const authSlice = createSlice({
       state.token = action.payload
     },
     setIsAuthenticated: (state, action) => {
+      console.log("entrou no estado", action.payload)
       state.isAuthenticated = action.payload
     },
   },

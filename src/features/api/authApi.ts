@@ -5,7 +5,7 @@ export const callbackAndGetTokens = async () => {
   try {
     const response = await axios.post(
       "/token",
-      callbackBodyParamsToGettingTokens(), // Corpo da requisição
+      callbackBodyParamsToGettingTokens(), 
       {
         headers: {
           "Content-Type": "application/x-www-form-urlencoded",
